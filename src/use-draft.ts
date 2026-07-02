@@ -55,6 +55,7 @@ export function useDraft(isDirty: IsDirtyInput): UseDraftReturn {
 
   const { status, proceed, reset } = useBlocker({
     shouldBlockFn,
+    enableBeforeUnload: shouldBlockFn,
     withResolver: true,
   });
 

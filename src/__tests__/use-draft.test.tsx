@@ -46,6 +46,17 @@ describe("useDraft", () => {
     expect(reset).toHaveBeenCalledTimes(1);
   });
 
+  it("ties enableBeforeUnload to shouldBlockFn instead of the useBlocker default", () => {
+    blockerMock.mockReturnValue({ status: "idle", proceed: vi.fn(), reset: vi.fn() });
+    renderHook(() => useDraft(true));
+
+    const lastCall = blockerMock.mock.calls.at(-1)?.[0] as {
+      shouldBlockFn: () => boolean;
+      enableBeforeUnload: () => boolean;
+    };
+    expect(lastCall.enableBeforeUnload).toBe(lastCall.shouldBlockFn);
+  });
+
   it("accepts a getter function and the blocker reads it lazily", () => {
     blockerMock.mockReturnValue({ status: "idle", proceed: vi.fn(), reset: vi.fn() });
     let dirtyFlag = true;
