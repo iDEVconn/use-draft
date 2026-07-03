@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId } from "react";
+import { useCallback, useEffect, useId, useRef } from "react";
 import { useBlocker } from "@tanstack/react-router";
 import { useDraftStore } from "./store";
 
@@ -58,6 +58,24 @@ export function useDraft(isDirty: IsDirtyInput): UseDraftReturn {
     enableBeforeUnload: shouldBlockFn,
     withResolver: true,
   });
+
+  // If this component unmounts while a navigation is blocked (status ===
+  // "blocked"), the underlying router promise never resolves unless
+  // something calls proceed()/reset() — a consumer that forgets to render
+  // the confirm dialog (or unmounts before the user answers it) would
+  // otherwise leave every future navigation attempt hanging forever with
+  // no dialog and no way to recover short of a full page reload. Default
+  // to reset() (cancel the navigation) on unmount so the app never gets
+  // permanently stuck; the user can simply retry the navigation.
+  const blockerStateRef = useRef({ status, reset });
+  blockerStateRef.current = { status, reset };
+  useEffect(() => {
+    return () => {
+      if (blockerStateRef.current.status === "blocked") {
+        blockerStateRef.current.reset?.();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     function handleBeforeUnload(e: BeforeUnloadEvent) {

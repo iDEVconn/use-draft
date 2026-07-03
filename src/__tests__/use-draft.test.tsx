@@ -57,6 +57,28 @@ describe("useDraft", () => {
     expect(lastCall.enableBeforeUnload).toBe(lastCall.shouldBlockFn);
   });
 
+  it("auto-resolves a pending block on unmount so navigation never hangs forever", () => {
+    const proceed = vi.fn();
+    const reset = vi.fn();
+    blockerMock.mockReturnValue({ status: "blocked", proceed, reset });
+    const { unmount } = renderHook(() => useDraft(true));
+
+    unmount();
+
+    expect(reset).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not call reset on unmount when no navigation is currently blocked", () => {
+    const proceed = vi.fn();
+    const reset = vi.fn();
+    blockerMock.mockReturnValue({ status: "idle", proceed, reset });
+    const { unmount } = renderHook(() => useDraft(true));
+
+    unmount();
+
+    expect(reset).not.toHaveBeenCalled();
+  });
+
   it("accepts a getter function and the blocker reads it lazily", () => {
     blockerMock.mockReturnValue({ status: "idle", proceed: vi.fn(), reset: vi.fn() });
     let dirtyFlag = true;
