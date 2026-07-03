@@ -1,6 +1,6 @@
 {
   "name": "@idevconn/use-draft",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Global unsaved-changes blocker for TanStack Router SPAs. Aggregates dirty state from every mounted form via a Zustand store and blocks both in-app navigation (router dialog) and browser refresh/close (native dialog).",
   "license": "Apache-2.0",
   "author": "iDEVconn",
