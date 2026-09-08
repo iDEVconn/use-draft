@@ -3,6 +3,7 @@ dist
 coverage
 .turbo
 .nx
+.claude-flow
 .DS_Store
 *.tsbuildinfo
 
