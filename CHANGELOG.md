@@ -1,5 +1,11 @@
 # @idevconn/use-draft
 
+## 0.2.3
+
+### Patch Changes
+
+- 5266ccb: Chore: update dev dependencies within their existing semver ranges (`npm update`) and resolve a low-severity `npm audit` finding. No runtime dependencies or public API affected.
+
 ## 0.2.2
 
 ### Patch Changes
